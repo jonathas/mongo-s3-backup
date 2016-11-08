@@ -1,26 +1,17 @@
 import S3Client from "../config/aws";
 import * as fs from "fs";
-import * as mime from "mime";
-const uid = require("uid2");
 
 class S3Manager {
 
-    private generateFileName = (uploadedFile): string => {
-        const fileExt = uploadedFile.originalFilename.split(".").pop();
-        return uid(22) + "." + fileExt;
-    }
-
-    public upload = (uploadedFile, callback): void => {
-        const key = this.generateFileName(uploadedFile);
-
+    public upload = (file: { name: string, type: string, path: string }, callback): void => {
         const data = {
-            Body: fs.createReadStream(uploadedFile.path),
-            Key: key,
-            Metadata: { "Content-Type": uploadedFile.type }
+            Body: fs.createReadStream(file.path),
+            Key: file.name,
+            Metadata: { "Content-Type": file.type }
         };
 
         S3Client.upload(data, (err, data) => {
-            fs.unlink(uploadedFile.path);
+            fs.unlink(file.path);
             callback(err, data);
         });
     }

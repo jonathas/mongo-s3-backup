@@ -1,3 +1,4 @@
+import {log} from "./logger";
 const mongoose = require("mongoose");
 mongoose.Promise = require("bluebird");
 let dbName;
@@ -20,7 +21,7 @@ mongoose.connect(`mongodb://${host}:${port}/${dbName}`);
 
 mongoose.connection.on("error", (err) => {
     if (err.message.indexOf("ECONNREFUSED") !== -1) {
-       console.log("Error: The server was not able to reach MongoDB.\nMaybe it's not running?");
+       log.error("Error: The server was not able to reach MongoDB.\nMaybe it's not running?");
        process.exit(1);
     } else {
        throw err;
