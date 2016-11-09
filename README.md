@@ -2,7 +2,9 @@
 
 [![Build Status](https://travis-ci.org/jonathas/mongo-s3-backup.svg?branch=master)](https://travis-ci.org/jonathas/mongo-s3-backup) [![Coverage Status](https://coveralls.io/repos/github/jonathas/mongo-s3-backup/badge.svg?branch=master)](https://coveralls.io/github/jonathas/mongo-s3-backup?branch=master)
 
-A script that generates a dump from your MongoDB databases, compresses this dump as tar.bz2, generates a hash file for integrity check and then uploads both files to your Amazon S3 bucket.
+A script to backup your MongoDB databases and store them on Amazon S3.
+
+It generates a dump from your MongoDB databases, compresses this dump as tar.bz2, generates a hash file for integrity check and then uploads both files to your Amazon S3 bucket.
 
 In order to test it, be sure to have the following dependencies installed on your system:
 
