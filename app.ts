@@ -1,3 +1,4 @@
+const dotenv = require("dotenv").config();
 import * as shell from "shelljs";
 import * as moment from "moment";
 import Backup from "./backup";
@@ -7,8 +8,8 @@ const dependencies = ["mongodump", "tar", "md5sum"];
 
 for (let dep of dependencies) {
     if (!shell.which(dep)) {
-        shell.echo(`Sorry, this script requires ${dep}`);
-        shell.exit(1);
+        log.error(`Sorry, this script requires ${dep}`);
+        process.exit(1);
     }
 }
 

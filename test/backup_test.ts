@@ -2,7 +2,6 @@ import * as path from "path";
 import * as fs from "fs";
 import * as async from "async";
 import * as shell from "shelljs";
-import * as moment from "moment";
 import Backup from "../backup";
 import { chai, expect } from "./common";
 
@@ -64,6 +63,7 @@ describe("# Backup", () => {
                 expect(err).to.not.be.null; // Expect that the file got deleted
                 fs.stat(`${mongoBackup.binDir}/${mongoBackup.backupFileName}.tar.bz2`, (err, res) => {
                     expect(err).to.not.be.null; // Expect that the file got deleted
+                    done();
                 });
             });
         });

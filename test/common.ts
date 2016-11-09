@@ -1,6 +1,19 @@
+const dotenv = require("dotenv").config();
+import "mocha";
+import * as shell from "shelljs";
+import {log} from "../config/logger";
 process.env.NODE_ENV = "test";
 
-import "mocha";
+const dependencies = ["mongodump", "tar", "md5sum"];
+
+for (let dep of dependencies) {
+    if (!shell.which(dep)) {
+        log.error(`Sorry, this script requires ${dep}`);
+        process.exit(1);
+    }
+}
+
+const db = require("../config/db"); // Ensures that Mongo is running
 
 // Muahahahaha
 const AWSMock = require("aws-sdk-mock");

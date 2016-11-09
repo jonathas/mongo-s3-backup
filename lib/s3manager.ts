@@ -10,9 +10,9 @@ class S3Manager {
             Metadata: { "Content-Type": file.type }
         };
 
-        S3Client.upload(data, (err, data) => {
+        S3Client.upload(data, (err, result) => {
             fs.unlink(file.path);
-            callback(err, data);
+            callback(err, result);
         });
     }
 

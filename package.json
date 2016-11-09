@@ -15,6 +15,7 @@
         "async": "^2.1.2",
         "aws-sdk": "^2.6.15",
         "bluebird": "^3.4.6",
+        "dotenv": "^2.0.0",
         "moment": "^2.15.2",
         "mongoose": "^4.6.6",
         "shelljs": "^0.7.5",

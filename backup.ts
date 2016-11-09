@@ -20,6 +20,7 @@ class Backup {
 
     dumpDB = (callback) => {
         shell.exec("mongodump --quiet", (code, stdout, stderr) => {
+            /* istanbul ignore next */
             if (code !== 0) return callback(stderr);
             this.dumpEndTime = moment().utc().format("YYYY-MM-DDTHHmmss");
             callback(null, stdout);
@@ -35,6 +36,7 @@ class Backup {
         });
         shell.exec(`tar -cjf ${this.backupFileName}.tar.bz2 dump`, (code, stdout, stderr) => {
             shell.exec("rm -R dump");
+            /* istanbul ignore next */
             if (code !== 0) return callback(stderr);
             callback(null, stdout);
         });
@@ -47,6 +49,7 @@ class Backup {
             path: `${this.binDir}/${this.backupFileName}.md5`
         });
         shell.exec(`md5sum ${this.backupFileName}.tar.bz2 > ${this.backupFileName}.md5`, (code, stdout, stderr) => {
+            /* istanbul ignore next */
             if (code !== 0) return callback(stderr);
             callback(null, stdout);
         });
