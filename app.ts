@@ -16,7 +16,4 @@ for (let dep of dependencies) {
 const db = require("./config/db"); // Ensures that Mongo is running
 
 const mongoBackup = new Backup();
-mongoBackup.run((err, res) => {
-    if (err) process.exit(1);
-    log.info(`Backup finished - ${moment().format()}`);
-});
+mongoBackup.run((err, res) => res);

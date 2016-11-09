@@ -16,7 +16,6 @@ class Backup {
     constructor() {
         this.dumpBeginTime = moment();
         this.backupFileName = `mongodump_${this.dumpBeginTime.clone().utc().format("YYYY-MM-DDTHHmmss")}`;
-        log.info(`Backup started - ${this.dumpBeginTime.clone().format()}`);
         this.binDir = path.resolve(__dirname);
         shell.cd(this.binDir);
     }
@@ -71,6 +70,7 @@ class Backup {
     }
 
     run = (callback) => {
+        log.info(`Backup started - ${this.dumpBeginTime.clone().format()}`);
         async.series([
             this.dumpDB,
             this.compressDump,
@@ -78,10 +78,12 @@ class Backup {
             this.upload,
             this.removeUploaded
         ], (err, res) => {
+            /* istanbul ignore next */
             if (err) {
                 log.error(JSON.stringify(err));
-                return callback(JSON.stringify(err));
+                process.exit(1);
             }
+            log.info(`Backup finished - ${moment().format()}`);
             callback(null, res);
         });
     }

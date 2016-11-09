@@ -8,7 +8,7 @@ import Backup from "../backup";
 describe("# Backup", () => {
     let mongoBackup: Backup;
 
-    before((done) => {
+    beforeEach((done) => {
         mongoBackup = new Backup();
         done();
     });

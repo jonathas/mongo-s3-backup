@@ -1,7 +1,7 @@
 install:
 	@echo "========== Installing dependencies =========="
 	@echo
-	npm install --silent --progress=false
+	yarn install
 	@echo
 	@echo "========== Generating files =========="
 	@echo
@@ -25,7 +25,7 @@ install:
 uninstall:
 	@echo "========== Cleaning the project =========="
 	@echo
-	rm -R bin node_modules coverage
+	-rm -R bin node_modules coverage
 	@echo
 	@echo "========== Destroying infrastructure =========="
 	docker-compose kill
@@ -35,7 +35,7 @@ uninstall:
 purge:
 	@echo "========== Cleaning the project =========="
 	@echo
-	rm -R bin node_modules coverage
+	-rm -R bin node_modules coverage
 	@echo
 	@echo "========== Destroying infrastructure =========="
 	docker-compose kill
