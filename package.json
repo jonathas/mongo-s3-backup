@@ -6,6 +6,9 @@
     "license": "GPL-3.0",
     "author": "Jon Ribeiro <contact@jonathas.com>",
     "scripts": {
+        "pretest": "gulp",
+        "test": "istanbul cover node_modules/mocha/bin/_mocha",
+        "prestart": "gulp",
         "start": "node bin/app.js"
     },
     "dependencies": {
@@ -19,6 +22,7 @@
     },
     "devDependencies": {
         "@types/async": "^2.0.32",
+        "@types/mocha": "^2.2.32",
         "@types/moment": "^2.13.0",
         "@types/mongoose": "^4.5.41",
         "@types/node": "^6.0.46",
