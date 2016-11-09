@@ -5,7 +5,7 @@ install:
 	@echo
 	@echo "========== Generating files =========="
 	@echo
-	node node_modules/gulp/bin/gulp.js
+	npm run build
 	@echo
 	@echo "========== Building infrastructure =========="
 	@echo
@@ -14,6 +14,18 @@ install:
 	@echo "========== Starting container =========="
 	@echo
 	docker-compose up -d
+	@echo
+	@echo "========== Testing the code and writing coverage =========="
+	@echo
+	npm test
+	@echo
+	@echo
+	@echo "Enjoy ;)"
+
+no-docker:
+	@echo "========== Installing dependencies =========="
+	@echo
+	yarn install
 	@echo
 	@echo "========== Testing the code and writing coverage =========="
 	@echo

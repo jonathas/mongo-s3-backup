@@ -9,7 +9,8 @@
         "pretest": "gulp",
         "test": "istanbul cover node_modules/mocha/bin/_mocha",
         "prestart": "gulp",
-        "start": "node bin/app.js"
+        "start": "node bin/app.js",
+        "build": "gulp"
     },
     "dependencies": {
         "async": "^2.1.2",
