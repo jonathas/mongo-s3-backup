@@ -21,7 +21,7 @@ class Backup {
     }
 
     dumpDB = (callback) => {
-        shell.exec("mongodump --quiet", (code, stdout, stderr) => {
+        shell.exec("mongodump", (code, stdout, stderr) => {
             /* istanbul ignore next */
             if (code !== 0) return callback(stderr);
             callback(null, stdout);
