@@ -2,8 +2,8 @@ import * as path from "path";
 import * as fs from "fs";
 import * as async from "async";
 import * as shell from "shelljs";
+import { expect } from "./common";
 import Backup from "../backup";
-import { chai, expect } from "./common";
 
 describe("# Backup", () => {
     let mongoBackup: Backup;

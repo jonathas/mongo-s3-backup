@@ -4,14 +4,19 @@ import * as fs from "fs";
 class S3Manager {
 
     public upload = (file: { name: string, type: string, path: string }, callback): void => {
+        const content = fs.createReadStream(file.path);
+        content.on("error", (err) => {
+            return callback(err);
+        });
+
         const data = {
-            Body: fs.createReadStream(file.path),
+            Body: content,
             Key: file.name,
             Metadata: { "Content-Type": file.type }
         };
 
         S3Client.upload(data, (err, result) => {
-            fs.unlink(file.path);
+            content.close();
             callback(err, result);
         });
     }

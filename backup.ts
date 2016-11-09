@@ -1,4 +1,5 @@
 import * as path from "path";
+import * as fs from "fs";
 import * as async from "async";
 import * as shell from "shelljs";
 import * as moment from "moment";
@@ -8,12 +9,14 @@ import S3Manager from "./lib/s3manager";
 class Backup {
 
     binDir: string;
-    dumpEndTime: string;
+    dumpBeginTime: moment.Moment;
     backupFileName: string;
     files = [];
 
     constructor() {
-        log.info(`Backup started - ${moment().format()}`);
+        this.dumpBeginTime = moment();
+        this.backupFileName = `mongodump_${this.dumpBeginTime.clone().utc().format("YYYY-MM-DDTHHmmss")}`;
+        log.info(`Backup started - ${this.dumpBeginTime.clone().format()}`);
         this.binDir = path.resolve(__dirname);
         shell.cd(this.binDir);
     }
@@ -22,13 +25,11 @@ class Backup {
         shell.exec("mongodump --quiet", (code, stdout, stderr) => {
             /* istanbul ignore next */
             if (code !== 0) return callback(stderr);
-            this.dumpEndTime = moment().utc().format("YYYY-MM-DDTHHmmss");
             callback(null, stdout);
         });
     }
 
     compressDump = (callback) => {
-        this.backupFileName = `mongodump_${this.dumpEndTime}`;
         this.files.push({
             name: `${this.backupFileName}.tar.bz2`,
             type: "application/x-bzip2",
@@ -61,12 +62,21 @@ class Backup {
         }, callback);
     }
 
+    removeUploaded = (callback) => {
+        async.every(this.files, (file, loopCallback) => {
+            fs.unlink(file.path, (err) => {
+                loopCallback(null, true);
+            });
+        }, callback);
+    }
+
     run = (callback) => {
         async.series([
             this.dumpDB,
             this.compressDump,
             this.generateHash,
-            this.upload
+            this.upload,
+            this.removeUploaded
         ], (err, res) => {
             if (err) {
                 log.error(JSON.stringify(err));
