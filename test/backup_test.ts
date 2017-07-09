@@ -1,7 +1,6 @@
 import * as path from "path";
 import * as fs from "fs";
 import * as async from "async";
-import * as shell from "shelljs";
 import { expect } from "./common";
 import Backup from "../backup";
 
@@ -13,16 +12,15 @@ describe("# Backup", () => {
         done();
     });
 
-    it("should dump the DBs", (done) => {
+    it("should dump the DBs", () => {
         mongoBackup.dumpDB((err, res) => {
             fs.stat(`${mongoBackup.binDir}/dump`, (err, res) => {
                 expect(err).to.be.null;
-                done();
             });
         });
     });
 
-    it("should compress the dump", (done) => {
+    it("should compress the dump", () => {
         async.series([
             mongoBackup.dumpDB,
             mongoBackup.compressDump
@@ -38,7 +36,7 @@ describe("# Backup", () => {
         });
     });
 
-    it("should generate a hash of the compressed dump", (done) => {
+    it("should generate a hash of the compressed dump", () => {
         async.series([
             mongoBackup.dumpDB,
             mongoBackup.compressDump,
@@ -56,7 +54,7 @@ describe("# Backup", () => {
         });
     });
 
-    it("should upload the generated files", (done) => {
+    it("should upload the generated files", () => {
         mongoBackup.run((err, res) => {
             expect(err).to.be.null;
             fs.stat(`${mongoBackup.binDir}/${mongoBackup.backupFileName}.md5`, (err, res) => {

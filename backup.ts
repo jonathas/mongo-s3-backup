@@ -1,10 +1,10 @@
+import * as child_process from "child_process";
 import * as path from "path";
-import * as fs from "fs";
-import * as async from "async";
-import * as shell from "shelljs";
+import * as util from "util";
 import * as moment from "moment";
 import { log } from "./config/logger";
 import S3Manager from "./lib/s3manager";
+const unlink = util.promisify(require("fs").unlink);
 
 class Backup {
 
@@ -61,7 +61,7 @@ class Backup {
         }, callback);
     }
 
-    removeUploaded = (callback) => {
+    private removeUploaded = () => {
         async.every(this.files, (file, loopCallback) => {
             fs.unlink(file.path, (err) => {
                 loopCallback(null, true);
@@ -69,7 +69,7 @@ class Backup {
         }, callback);
     }
 
-    run = (callback) => {
+    public run = () => {
         log.info(`Backup started - ${this.dumpBeginTime.clone().format()}`);
         async.series([
             this.dumpDB,

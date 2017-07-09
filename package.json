@@ -13,22 +13,18 @@
         "build": "gulp"
     },
     "dependencies": {
-        "async": "^2.1.2",
+        "@types/node": "^6.0.46",
         "aws-sdk": "^2.6.15",
-        "bluebird": "^3.4.6",
         "dotenv": "^2.0.0",
         "moment": "^2.15.2",
         "mongoose": "^4.6.6",
-        "shelljs": "^0.7.5",
         "winston": "^2.3.0"
     },
     "devDependencies": {
-        "@types/async": "^2.0.32",
         "@types/mocha": "^2.2.32",
         "@types/moment": "^2.13.0",
         "@types/mongoose": "^4.5.41",
         "@types/node": "^6.0.46",
-        "@types/shelljs": "^0.3.32",
         "@types/winston": "^0.0.29",
         "aws-sdk-mock": "^1.5.0",
         "chai": "^3.5.0",

@@ -1,6 +1,6 @@
 import {log} from "./logger";
 const mongoose = require("mongoose");
-mongoose.Promise = require("bluebird");
+
 let dbName;
 
 switch (process.env.NODE_ENV) {
