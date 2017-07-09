@@ -1,28 +1,34 @@
 import S3Client from "../config/aws";
+import { log } from "../config/logger";
 import * as fs from "fs";
 
 class S3Manager {
 
-    public upload = (file: { name: string, type: string, path: string }, callback): void => {
-        const content = fs.createReadStream(file.path);
-        content.on("error", (err) => {
-            return callback(err);
-        });
+    public upload = async (file: { name: string, type: string, path: string }): Promise<any> => {
+        try {
+            const data = {
+                Body: fs.createReadStream(file.path),
+                Key: file.name,
+                ContentType: file.type
+            };
 
-        const data = {
-            Body: content,
-            Key: file.name,
-            Metadata: { "Content-Type": file.type }
-        };
+            await this.S3ClientUpload(data);
 
-        S3Client.upload(data, (err, result) => {
-            content.close();
-            callback(err, result);
-        });
+            return new Promise((resolve, reject) => resolve(true));
+        } catch (err) {
+            /* istanbul ignore next */
+            return new Promise((resolve, reject) => reject(err));
+        }
     }
 
-    public delete = (key: string): void => {
-        S3Client.deleteObject({ Key: key });
+    private S3ClientUpload = (data): Promise<any> => {
+        return new Promise((resolve, reject) => {
+            S3Client.upload(<any>data, (err, data) => {
+                /* istanbul ignore next */
+                if (err) return reject(err);
+                return resolve(data);
+            });
+        });
     }
 
 }

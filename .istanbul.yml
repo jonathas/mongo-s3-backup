@@ -4,7 +4,7 @@ instrumentation:
     extensions:
         - .js
     default-excludes: true
-    excludes: ["**/app.js", "**/cluster.js", "**/config/**", "**/lib/**"]
+    excludes: ["**/app.js", "**/cluster.js", "**/config/**"]
     embed-source: false
     variable: __coverage__
     compact: true

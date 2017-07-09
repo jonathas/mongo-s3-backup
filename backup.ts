@@ -17,75 +17,106 @@ class Backup {
         this.dumpBeginTime = moment();
         this.backupFileName = `mongodump_${this.dumpBeginTime.clone().utc().format("YYYY-MM-DDTHHmmss")}`;
         this.binDir = path.resolve(__dirname);
-        shell.cd(this.binDir);
     }
 
-    dumpDB = (callback) => {
-        shell.exec("mongodump", (code, stdout, stderr) => {
-            /* istanbul ignore next */
-            if (code !== 0) return callback(stderr);
-            callback(null, stdout);
+    private dumpDB = (): Promise<any> => {
+        return new Promise((resolve, reject) => {
+            child_process.exec(`cd ${this.binDir} && mongodump`, (err, stdout, stderr) => {
+                /* istanbul ignore next */
+                if (err) return reject(err);
+                return resolve(stdout);
+            });
         });
     }
 
-    compressDump = (callback) => {
+    private compressDump = () => {
         this.files.push({
             name: `${this.backupFileName}.tar.bz2`,
             type: "application/x-bzip2",
             path: `${this.binDir}/${this.backupFileName}.tar.bz2`
         });
-        shell.exec(`tar -cjf ${this.backupFileName}.tar.bz2 dump`, (code, stdout, stderr) => {
-            shell.exec("rm -R dump");
-            /* istanbul ignore next */
-            if (code !== 0) return callback(stderr);
-            callback(null, stdout);
+        return new Promise((resolve, reject) => {
+            child_process.exec(`cd ${this.binDir} && tar -cjf ${this.backupFileName}.tar.bz2 dump`, (err, stdout, stderr) => {
+                /* istanbul ignore next */
+                if (err) return reject(err);
+                return resolve(stdout);
+            });
         });
     }
 
-    generateHash = (callback) => {
+    private removeDump = (): Promise<any> => {
+        return new Promise((resolve, reject) => {
+            child_process.exec(`cd ${this.binDir} && rm -R dump`, (err, stdout, stderr) => {
+                /* istanbul ignore next */
+                if (err) return reject(err);
+                return resolve(stdout);
+            });
+        });
+    }
+
+    private generateHash = () => {
         this.files.push({
             name: `${this.backupFileName}.md5`,
             type: "text/plain",
             path: `${this.binDir}/${this.backupFileName}.md5`
         });
-        shell.exec(`md5sum ${this.backupFileName}.tar.bz2 > ${this.backupFileName}.md5`, (code, stdout, stderr) => {
-            /* istanbul ignore next */
-            if (code !== 0) return callback(stderr);
-            callback(null, stdout);
-        });
-    }
-
-    upload = (callback) => {
-        async.every(this.files, (file, loopCallback) => {
-            S3Manager.upload(file, loopCallback);
-        }, callback);
-    }
-
-    private removeUploaded = () => {
-        async.every(this.files, (file, loopCallback) => {
-            fs.unlink(file.path, (err) => {
-                loopCallback(null, true);
+        return new Promise((resolve, reject) => {
+            child_process.exec(`cd ${this.binDir} && md5sum ${this.backupFileName}.tar.bz2 > ${this.backupFileName}.md5`, (err, stdout, stderr) => {
+                /* istanbul ignore next */
+                if (err) return reject(err);
+                return resolve(stdout);
             });
-        }, callback);
+        });
     }
 
-    public run = () => {
-        log.info(`Backup started - ${this.dumpBeginTime.clone().format()}`);
-        async.series([
-            this.dumpDB,
-            this.compressDump,
-            this.generateHash,
-            this.upload,
-            this.removeUploaded
-        ], (err, res) => {
-            /* istanbul ignore next */
-            if (err) {
-                log.error(JSON.stringify(err));
-                process.exit(1);
+    private upload = async () => {
+        try {
+            for (let file of this.files) {
+                await S3Manager.upload(file);
             }
-            log.info(`Backup finished - ${moment().format()}`);
-            callback(null, res);
-        });
+            return new Promise((resolve, reject) => resolve(true));
+        } catch (err) {
+            /* istanbul ignore next */
+            return new Promise((resolve, reject) => reject(err));
+        }
+    }
+
+    private removeUploaded = async () => {
+        try {
+            for (let file of this.files) {
+                await unlink(file.path);
+            }
+            return new Promise((resolve, reject) => resolve(true));
+        } catch (err) {
+            /* istanbul ignore next */
+            return new Promise((resolve, reject) => reject(err));
+        }
+    }
+
+    public run = async () => {
+        try {
+            /* istanbul ignore next */
+            if (process.env.NODE_ENV !== "test") {
+                log.info(`Backup started - ${this.dumpBeginTime.clone().format()}`);
+            }
+
+            await this.dumpDB();
+            await this.compressDump();
+            await this.removeDump();
+            await this.generateHash();
+            await this.upload();
+            await this.removeUploaded();
+
+            /* istanbul ignore next */
+            if (process.env.NODE_ENV !== "test") {
+                log.info(`Backup finished - ${moment().format()}`);
+            }
+        } catch (err) {
+            /* istanbul ignore next */
+            log.error(JSON.stringify(err));
+            /* istanbul ignore next */
+            process.exit(1);
+        }
     }
 
 }
