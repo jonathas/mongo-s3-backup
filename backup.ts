@@ -95,11 +95,6 @@ class Backup {
 
     public run = async () => {
         try {
-            /* istanbul ignore next */
-            if (process.env.NODE_ENV !== "test") {
-                log.info(`Backup started - ${this.dumpBeginTime.clone().format()}`);
-            }
-
             await this.dumpDB();
             await this.compressDump();
             await this.removeDump();
@@ -107,15 +102,10 @@ class Backup {
             await this.upload();
             await this.removeUploaded();
 
-            /* istanbul ignore next */
-            if (process.env.NODE_ENV !== "test") {
-                log.info(`Backup finished - ${moment().format()}`);
-            }
+            return new Promise((resolve, reject) => resolve(true));
         } catch (err) {
             /* istanbul ignore next */
-            log.error(JSON.stringify(err));
-            /* istanbul ignore next */
-            process.exit(1);
+            return new Promise((resolve, reject) => reject(err));
         }
     }
 

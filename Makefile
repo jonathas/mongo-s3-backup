@@ -9,11 +9,11 @@ install:
 	@echo
 	@echo "========== Building infrastructure =========="
 	@echo
-	docker-compose build
+	-cd infra/cron && docker-compose build
 	@echo
 	@echo "========== Starting container =========="
 	@echo
-	docker-compose up -d
+	-cd infra/cron && docker-compose up -d
 	@echo
 	@echo "========== Testing the code and writing coverage =========="
 	@echo
@@ -50,7 +50,7 @@ purge:
 	-rm -R bin node_modules coverage
 	@echo
 	@echo "========== Destroying infrastructure =========="
-	docker-compose kill
-	docker-compose rm -f
-	docker rmi source_web
+	-cd infra/cron && docker-compose kill
+	-cd infra/cron && docker-compose rm -f
+	-cd infra/cron && docker rmi mongo-s3-backup
 	@echo "Done."

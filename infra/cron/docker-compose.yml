@@ -1,0 +1,15 @@
+version: "2"
+services:
+    cron:
+        build: .
+        container_name: mongo-s3-backup
+        volumes:
+            - /var/log/mongo-s3-backup:/var/log/mongo-s3-backup
+            - ./root:/etc/crontabs/root
+            - ../..:/home/node
+        network_mode: host
+
+networks:
+    default:
+        external:
+            name: "host"
