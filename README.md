@@ -23,6 +23,17 @@ In order to start the Docker container and configure cron inside of it to run th
 $ make
 ```
 
+In order to start this container automatically if your server reboots:
+
+- Change the path inside the file infra/host/etc/systemd/system/mongo-backup.service to be the path where you put the mongo-s3-backup source code.
+- As root, copy this file to /etc/systemd/system in your server
+- Enable and start it:
+
+```
+# systemctl enable mongo-backup
+# systemctl start mongo-backup
+```
+
 If you don't want to use Docker, just run instead:
 
 ```

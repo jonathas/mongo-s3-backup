@@ -1,0 +1,12 @@
+[Unit]
+Description=Mongo backup
+Requires=docker.service
+After=docker.service
+
+[Service]
+Restart=always
+ExecStart=/usr/local/bin/docker-compose -f /home/jon/mongo-s3-backup/infra/cron/docker-compose.yml up
+ExecStop=/usr/local/bin/docker-compose -f /home/jon/mongo-s3-backup/infra/cron/docker-compose.yml stop
+
+[Install]
+WantedBy=default.target
