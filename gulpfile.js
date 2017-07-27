@@ -20,7 +20,7 @@ gulp.task("copy", () => {
 });
 
 gulp.task("transpile", () => {
-    return tsProject.src(".")
+    return tsProject.src()
         .pipe(sourcemaps.init())
         .pipe(tsProject()).js
         .pipe(sourcemaps.write("./maps"))

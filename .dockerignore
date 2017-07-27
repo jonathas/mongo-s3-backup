@@ -1,7 +1,0 @@
-.git
-.gitignore
-README.md
-LICENSE
-docker-compose.yml
-.editorconfig
-node_modules
